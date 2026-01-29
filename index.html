@@ -1,36 +1,3 @@
-/* SPLASH 2s */
-window.onload = () => {
-    setTimeout(()=>{
-        document.getElementById("splash").style.display = "none";
-    },2000);
-
-    gerarQRCode();
-};
-✅ Pronto
-Agora a splash fica mais rápida, sem parecer travada e mantendo um ar profissional.
-
-Se quiser, dá pra:
-
-fazer a splash sumir com fade (bem elegante)
-
-ou remover totalmente em desktop e deixar só no celular
-
-É só falar 👌
-
-Você disse:
-faça a editação e me mande o texto completo
-O ChatGPT disse:
-Perfeito 👍
-Aqui está o arquivo completo já editado, com:
-
-✅ splash de 2 segundos
-✅ topo branco
-✅ logo centralizada
-✅ tamanho de logo ajustado
-✅ resto do código intacto
-
-Pode copiar e colar direto 👇
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -42,7 +9,6 @@ Pode copiar e colar direto 👇
 :root{
     --vermelho:#fb5533;
     --vermelho-escuro:#d73211;
-    --cinza:#777;
     --borda:#e5e5e5;
 }
 
@@ -67,42 +33,53 @@ body{
     justify-content:center;
     z-index:9999;
 }
-#splash img{width:120px}
+#splash img{
+    width:120px;
+}
 
-/* TOPO */
+/* TOPO FIXO */
 .header{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:72px;
     background:#ffffff;
-    padding:20px 16px;
     display:flex;
     justify-content:center;
     align-items:center;
     border-bottom:1px solid var(--borda);
+    z-index:1000;
 }
 .header img{
-    height:48px;
-    max-width:100%;
+    height:42px;
 }
 
 /* CONTAINER */
 .container{
     max-width:420px;
-    margin:18px auto;
+    margin:100px auto 18px;
     padding:16px;
 }
 
 /* TEXTO */
-.title{font-size:16px;margin-bottom:12px}
+.title{
+    font-size:16px;
+    margin-bottom:12px;
+}
 .row{
     display:flex;
     justify-content:space-between;
     font-size:14px;
-    padding:6px 0
+    padding:6px 0;
 }
-.row strong{color:var(--vermelho)}
+.row strong{
+    color:var(--vermelho);
+}
 .timer{
     font-size:13px;
     color:var(--vermelho);
-    margin:10px 0 16px
+    margin:10px 0 16px;
 }
 
 /* PIX */
@@ -112,8 +89,6 @@ body{
     border-bottom:1px solid var(--borda);
     padding:18px 0;
 }
-
-/* QR CENTRALIZADO */
 #qrcode{
     display:flex;
     justify-content:center;
@@ -133,9 +108,8 @@ button{
 }
 button:hover{
     background:var(--vermelho);
-    color:#fff
+    color:#fff;
 }
-
 button.primary{
     background:var(--vermelho);
     color:#fff;
@@ -143,23 +117,23 @@ button.primary{
     margin-top:12px;
 }
 button.primary:hover{
-    background:var(--vermelho-escuro)
+    background:var(--vermelho-escuro);
 }
 button:disabled{
     background:#eee;
     color:#999;
     border:1px solid #ddd;
-    cursor:not-allowed
+    cursor:not-allowed;
 }
 
 /* LISTA */
 .instructions{
     font-size:13px;
     margin:16px 0;
-    padding-left:18px
+    padding-left:18px;
 }
 .instructions li{
-    margin-bottom:6px
+    margin-bottom:6px;
 }
 
 /* EXPIRADO */
@@ -178,10 +152,14 @@ button:disabled{
     font-size:11px;
     color:#777;
 }
-.footer strong{color:#555}
+.footer strong{
+    color:#555;
+}
 
 @media(max-width:480px){
-    .container{padding:12px}
+    .container{
+        padding:12px;
+    }
 }
 </style>
 </head>
@@ -212,7 +190,7 @@ button:disabled{
 </div>
 
 <div class="pix-box">
-    <div><strong>Pix</strong></div>
+    <strong>Pix</strong>
 
     <div id="qrcode"></div>
 
@@ -246,21 +224,17 @@ button:disabled{
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <script>
-/* SPLASH 2s */
 window.onload = () => {
     setTimeout(()=>{
         document.getElementById("splash").style.display = "none";
     },2000);
-
     gerarQRCode();
 };
 
-/* GERAR QR CODE */
 function gerarQRCode(){
     const codigoPix = document.getElementById("codigo").textContent.trim();
     const qrDiv = document.getElementById("qrcode");
     qrDiv.innerHTML = "";
-
     new QRCode(qrDiv,{
         text: codigoPix,
         width:220,
@@ -268,7 +242,6 @@ function gerarQRCode(){
     });
 }
 
-/* CONTADOR */
 let tempo = 600;
 const elTempo = document.getElementById("tempo");
 const btnCopiar = document.getElementById("copiar");
@@ -277,7 +250,6 @@ const expirado = document.getElementById("expirado");
 const intervalo = setInterval(()=>{
     const m = Math.floor(tempo/60);
     const s = tempo%60;
-
     elTempo.textContent =
         String(m).padStart(2,"0")+":"+
         String(s).padStart(2,"0");
@@ -290,7 +262,6 @@ const intervalo = setInterval(()=>{
     tempo--;
 },1000);
 
-/* COPIAR PIX */
 btnCopiar.onclick = () => {
     navigator.clipboard.writeText(
         document.getElementById("codigo").textContent.trim()
@@ -298,14 +269,8 @@ btnCopiar.onclick = () => {
     btnCopiar.textContent = "Código copiado";
 };
 
-/* OK → WHATSAPP */
 document.getElementById("okBtn").onclick = () => {
-    const origem = document.referrer;
-    if (origem && (origem.includes("wa.me") || origem.includes("whatsapp"))) {
-        window.location.href = origem;
-    } else {
-        window.location.href = "https://wa.me/";
-    }
+    window.location.href = "https://wa.me/";
 };
 </script>
 
