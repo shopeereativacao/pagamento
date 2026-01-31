@@ -23,7 +23,6 @@ body{
     color:#333;
 }
 
-/* SPLASH */
 #splash{
     position:fixed;
     inset:0;
@@ -37,7 +36,6 @@ body{
     width:120px;
 }
 
-/* TOPO FIXO */
 .header{
     position:fixed;
     top:0;
@@ -55,18 +53,17 @@ body{
     height:42px;
 }
 
-/* CONTAINER */
 .container{
     max-width:420px;
     margin:100px auto 18px;
     padding:16px;
 }
 
-/* TEXTO */
 .title{
     font-size:16px;
     margin-bottom:12px;
 }
+
 .row{
     display:flex;
     justify-content:space-between;
@@ -76,26 +73,26 @@ body{
 .row strong{
     color:var(--vermelho);
 }
+
 .timer{
     font-size:13px;
     color:var(--vermelho);
     margin:10px 0 16px;
 }
 
-/* PIX */
 .pix-box{
     text-align:center;
     border-top:1px solid var(--borda);
     border-bottom:1px solid var(--borda);
     padding:18px 0;
 }
+
 #qrcode{
     display:flex;
     justify-content:center;
     margin:12px 0;
 }
 
-/* BOTÕES */
 button{
     width:100%;
     padding:11px;
@@ -110,15 +107,18 @@ button:hover{
     background:var(--vermelho);
     color:#fff;
 }
+
 button.primary{
     background:var(--vermelho);
     color:#fff;
     border:none;
     margin-top:12px;
 }
+
 button.primary:hover{
     background:var(--vermelho-escuro);
 }
+
 button:disabled{
     background:#eee;
     color:#999;
@@ -126,17 +126,16 @@ button:disabled{
     cursor:not-allowed;
 }
 
-/* LISTA */
 .instructions{
     font-size:13px;
     margin:16px 0;
     padding-left:18px;
 }
+
 .instructions li{
     margin-bottom:6px;
 }
 
-/* EXPIRADO */
 .expired{
     text-align:center;
     color:#d32f2f;
@@ -145,7 +144,6 @@ button:disabled{
     display:none;
 }
 
-/* RODAPÉ */
 .footer{
     margin-top:18px;
     text-align:center;
@@ -155,23 +153,15 @@ button:disabled{
 .footer strong{
     color:#555;
 }
-
-@media(max-width:480px){
-    .container{
-        padding:12px;
-    }
-}
 </style>
 </head>
 
 <body>
 
-<!-- SPLASH -->
 <div id="splash">
     <img src="./logo1.jpeg" alt="Logo">
 </div>
 
-<!-- TOPO -->
 <div class="header">
     <img src="./logo1.jpeg" alt="Logo">
 </div>
@@ -194,9 +184,9 @@ button:disabled{
 
     <div id="qrcode"></div>
 
-    <pre id="codigo" style="display:none;">
+    <textarea id="codigo" style="display:none;">
 00020101021226950014br.gov.bcb.pix2573qrcode.mtbank.com.br/spi-gateway/brx/cob/8be4d164bde645fa8340a4eda91e4a5e5204000053039865802BR5914Questcore Ltda6008Toritama61085512500062070503***63045ACF
-    </pre>
+    </textarea>
 
     <button id="copiar">Copiar código Pix</button>
 </div>
@@ -224,54 +214,59 @@ button:disabled{
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <script>
-window.onload = () => {
-    setTimeout(()=>{
-        document.getElementById("splash").style.display = "none";
-    },2000);
-    gerarQRCode();
-};
+document.addEventListener("DOMContentLoaded", () => {
 
-function gerarQRCode(){
-    const codigoPix = document.getElementById("codigo").textContent.trim();
+    setTimeout(() => {
+        document.getElementById("splash").style.display = "none";
+    }, 2000);
+
+    gerarQRCode();
+
+    let tempo = 600;
+    const elTempo = document.getElementById("tempo");
+    const btnCopiar = document.getElementById("copiar");
+    const expirado = document.getElementById("expirado");
+
+    const intervalo = setInterval(() => {
+        const m = Math.floor(tempo / 60);
+        const s = tempo % 60;
+
+        elTempo.textContent =
+            String(m).padStart(2, "0") + ":" +
+            String(s).padStart(2, "0");
+
+        if (tempo <= 0) {
+            clearInterval(intervalo);
+            btnCopiar.disabled = true;
+            expirado.style.display = "block";
+        }
+        tempo--;
+    }, 1000);
+
+    btnCopiar.onclick = () => {
+        navigator.clipboard.writeText(
+            document.getElementById("codigo").value.trim()
+        );
+        btnCopiar.textContent = "Código copiado";
+    };
+
+    document.getElementById("okBtn").onclick = () => {
+        window.location.href = "https://wa.me/";
+    };
+});
+
+function gerarQRCode() {
+    const codigoPix = document.getElementById("codigo").value.trim();
     const qrDiv = document.getElementById("qrcode");
     qrDiv.innerHTML = "";
-    new QRCode(qrDiv,{
+
+    new QRCode(qrDiv, {
         text: codigoPix,
-        width:220,
-        height:220
+        width: 220,
+        height: 220,
+        correctLevel: QRCode.CorrectLevel.H
     });
 }
-
-let tempo = 600;
-const elTempo = document.getElementById("tempo");
-const btnCopiar = document.getElementById("copiar");
-const expirado = document.getElementById("expirado");
-
-const intervalo = setInterval(()=>{
-    const m = Math.floor(tempo/60);
-    const s = tempo%60;
-    elTempo.textContent =
-        String(m).padStart(2,"0")+":"+
-        String(s).padStart(2,"0");
-
-    if(tempo <= 0){
-        clearInterval(intervalo);
-        btnCopiar.disabled = true;
-        expirado.style.display = "block";
-    }
-    tempo--;
-},1000);
-
-btnCopiar.onclick = () => {
-    navigator.clipboard.writeText(
-        document.getElementById("codigo").textContent.trim()
-    );
-    btnCopiar.textContent = "Código copiado";
-};
-
-document.getElementById("okBtn").onclick = () => {
-    window.location.href = "https://wa.me/";
-};
 </script>
 
 </body>
